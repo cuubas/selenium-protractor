@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:3000/" />
+<title>overview_instrument_search</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">overview_instrument_search</td></tr>
+</thead><tbody>
+<tr>
+	<td>desc</td>
+	<td></td>
+	<td>Overview Instrument Search</td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>should show your quotes as header</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=h4.__margin-bottom</td>
+	<td>Your quotes</td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>should input text into the search field</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>e2etag=instrumentFinder-input-instrumentSearch</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>model=$ctrl.model</td>
+	<td>china</td>
+</tr>
+<tr>
+	<td>assertValue</td>
+	<td>model=$ctrl.model</td>
+	<td>china</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>e2etag=instrumentFinder-div-instrumentName</td>
+	<td>*china*</td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>should follow first instrument</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>e2etag=instrumentFinder-div-instrumentName</td>
+	<td>instrumentTitle</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=label.switch-field</td>
+	<td></td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>should clear search button</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[2]/button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//input</td>
+	<td></td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>should check and unfollow the instrument</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>e2etag=quoteList-span-instrumentName</td>
+	<td>${instrumentTitle}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=div.quote-list__row.ng-scope &gt; div.quote-list__cell.quote-list__cell--edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div/button[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=h5.heading--section</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>css=h5.heading--section</td>
+	<td>${test}</td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>should open first article</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.article-item__header.ng-binding</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=a.article-item__header.ng-binding</td>
+	<td>articleTitle</td>
+</tr>
+<tr>
+	<td>sleep</td>
+	<td></td>
+	<td>1000</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>//h1</td>
+	<td>${articleTitle}</td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>css=button.button.button--follow</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.icon-button.ng-scope</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

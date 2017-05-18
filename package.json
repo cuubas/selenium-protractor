@@ -1,0 +1,11 @@
+{
+  "name": "selenium-protractor",
+  "nexus": "1.0.0",
+  "description": "Selenium test case converter to protractor source code",
+  "dependencies": {
+    "async": "2.1.4",
+    "cheerio": "^0.22.0",
+    "globby": "6.1.0",
+    "mkpath": "^1.0.0"
+  }
+}

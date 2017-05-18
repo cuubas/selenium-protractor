@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:3000/" />
+<title>article</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">article</td></tr>
+</thead><tbody>
+<tr>
+	<td>desc</td>
+	<td></td>
+	<td>article</td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>should load</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>e2etag=article__title</td>
+	<td>title</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>e2etag=article__title</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sleep</td>
+	<td></td>
+	<td>1000</td>
+</tr>
+<tr>
+	<td>assertText</td>
+	<td>binding=$ctrl.article.headline</td>
+	<td>${title}</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>click=close();</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeDatetime</td>
+	<td>e2etag=researchFeed-articleItem-articleDate</td>
+	<td>tttt</td>
+</tr>
+<tr>
+	<td>assertDatetime</td>
+	<td>e2etag=researchFeed-articleItem-articleDate</td>
+	<td>${tttt}</td>
+</tr>
+<tr>
+	<td>store</td>
+	<td>e2etag=researchFeed-articleItem-articleDate</td>
+	<td>elem</td>
+</tr>
+<!--should check -->
+<tr>
+	<td>assertType</td>
+	<td>${elem}</td>
+	<td>foo</td>
+</tr>
+<tr>
+	<td>assertDatetime</td>
+	<td>${elem}</td>
+	<td>12 Oct</td>
+</tr>
+<tr>
+	<td>assertDisplayed</td>
+	<td>${elem}</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

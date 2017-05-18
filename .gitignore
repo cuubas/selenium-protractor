@@ -1,0 +1,9 @@
+node_modules
+.vscode
+
+.DS_Store
+.DS_Store?
+npm-debug.log
+
+out
+in/_selenium.suite

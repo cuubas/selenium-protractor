@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:3000/" />
+<title>profile</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">profile</td></tr>
+</thead><tbody>
+<tr>
+	<td>inject</td>
+	<td></td>
+	<td>top</td>
+</tr>
+<tr>
+	<td>desc</td>
+	<td></td>
+	<td>Profile view</td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>Should go to profile settings</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.top-bar__tab-profile-text</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Settings</td>
+	<td></td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>Should try to change password and fail</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>e2etag=profile-settings__change-password-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//fieldset/nd-textbox/label/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=oldPassword</td>
+	<td>123</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//nd-textbox[2]/label/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=newPassword</td>
+	<td>1234</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//nd-textbox[3]/label/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=newPasswordVerify</td>
+	<td>123456</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=button.button.ng-binding</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>css=div.toast__text-holder</td>
+	<td></td>
+</tr>
+<tr>
+	<td>it</td>
+	<td></td>
+	<td>Should change job title</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[3]/div/button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>e2etag=profile-settings__edit-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>e2etag=profile-settings__save-button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertElementPresent</td>
+	<td>e2etag=toast-body</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
