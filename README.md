@@ -92,5 +92,5 @@ var suite = 'e2e/_source/_selenium.suite';
 var glob = 'e2e/_source/**/*.html';
 var destination = 'e2e/_generated';
 var delta = false; // if you have a watcher, you can pass partial glob/path and this flag as true to only add what is missing in the test suite
-transform(glob, destinationDir, suite, delta, (err) => {});
+transform(glob, destinationDir, suite, delta, (err) => {}); // for more advanced usage see index.js
 ```
