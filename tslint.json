@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "tslint:latest"
+  ],
+  "rules": {
+    "max-line-length": false,
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "no-string-literal": false
+  }
+}

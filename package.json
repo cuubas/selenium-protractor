@@ -2,10 +2,28 @@
   "name": "selenium-protractor",
   "version": "1.2.0",
   "description": "Selenium test case converter to protractor source code",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cuubas/selenium-protractor"
+  },
+  "license": "MIT",
+  "keywords": [
+    "selenium",
+    "protractor"
+  ],
+  "scripts": {
+    "lint": "tslint index.ts lib/*.ts",
+    "build:dev": "tsc --watch",
+    "build": "tsc"
+  },
   "dependencies": {
-    "async": "2.1.4",
     "cheerio": "^0.22.0",
     "globby": "6.1.0",
     "mkpath": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "11.12.2",
+    "typescript": "3.4.1",
+    "tslint": "5.14.0"
   }
 }
