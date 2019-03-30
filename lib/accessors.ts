@@ -1,14 +1,8 @@
-var locator = require('./locators').get;
-var accessors = {};
+import { get as locator } from './locators';
 
-module.exports = {
-    accessors: accessors,
-    register: register,
-    get: get,
-    format: format
-};
+export const accessors = {} as any;
 
-function register(type, fn, valueType, isMulti, inBrowserContext, global) {
+export function register(type, fn, valueType?, isMulti?, inBrowserContext?, global?) {
     accessors[type] = fn;
     fn.valueType = valueType || 'string';
     fn.isMulti = isMulti;
@@ -16,8 +10,8 @@ function register(type, fn, valueType, isMulti, inBrowserContext, global) {
     fn.isGlobal = global;
 }
 
-function get(type, formatter) {
-    var fn = accessors[type && type.toLowerCase()] || accessors['default'];
+export function get(type, formatter?) {
+    const fn = accessors[type && type.toLowerCase()] || accessors['default'];
     if (arguments.length === 2) {
         return fn(type, formatter);
     } else {
@@ -25,24 +19,26 @@ function get(type, formatter) {
     }
 }
 
-function format(type, cmd, formatter, output) {
-    var getter = get(type);
+export function format(type, cmd, formatter, output) {
+    const getter = get(type);
     // special case for attribute accessor
     if (type === 'attribute') {
-        var parts = cmd.locator.split('@');
+        const parts = cmd.locator.split('@');
         type = parts.pop();
         cmd.locator = parts.join('@');
     }
     if (getter.isGlobal) {
-        output.push('browser' + getter(cmd.locator, formatter) + '.then(function (_value) {' + formatter.endOfLine);
+        output.push('browser' + getter(cmd.locator, formatter) + '.then((_value) => {' + formatter.endOfLine);
     } else if (getter.inBrowserContext && !cmd.locator) {
-        //executeAsyncScript passes callback as last argument, thus arguments[arguments.length - 1]
-        output.push("browser.executeAsyncScript('arguments[arguments.length - 1](document.documentElement" + getter(type, formatter) + " || document.body" + getter(type, formatter) + ")')" + ".then(function (_value) {" + formatter.endOfLine);
+        // executeAsyncScript passes callback as last argument, thus arguments[arguments.length - 1]
+        // tslint:disable-next-line:max-line-length
+        output.push(`browser.executeAsyncScript('arguments[arguments.length - 1](document.documentElement` + getter(type, formatter) + ` || document.body` + getter(type, formatter) + `)')` + `.then((_value) => {` + formatter.endOfLine);
     } else if (getter.inBrowserContext) {
-        //executeAsyncScript passes callback as last argument, thus arguments[arguments.length - 1]
-        output.push("browser.executeAsyncScript('arguments[arguments.length - 1](arguments[0]" + getter(type, formatter) + ")', " + locator(cmd.locator, formatter) + ".getWebElement())" + ".then(function (_value) {" + formatter.endOfLine);
+        // executeAsyncScript passes callback as last argument, thus arguments[arguments.length - 1]
+        // tslint:disable-next-line:max-line-length
+        output.push(`browser.executeAsyncScript('arguments[arguments.length - 1](arguments[0]` + getter(type, formatter) + `)', ` + locator(cmd.locator, formatter) + `.getWebElement())` + `.then((_value) => {` + formatter.endOfLine);
     } else {
-        output.push(locator(cmd.locator, formatter, getter.isMulti) + getter(type, formatter) + ".then(function (_value) {" + formatter.endOfLine);
+        output.push(locator(cmd.locator, formatter, getter.isMulti) + getter(type, formatter) + `.then((_value) => {` + formatter.endOfLine);
     }
     return getter;
 }
@@ -64,23 +60,23 @@ register('text', (value, formatter) => {
 });
 
 register('elementwidth', (value, formatter) => {
-    return '.getSize().then(function (s){return s.width;})';
+    return '.getSize().then(s => s.width)';
 }, 'number');
 
 register('elementheight', (value, formatter) => {
-    return '.getSize().then(function (s){return s.height;})';
+    return '.getSize().then(s => s.height)';
 }, 'number');
 
 register('elementpositionleft', (value, formatter) => {
-    return '.getLocation().then(function (l){return l.x;})';
+    return '.getLocation().then(l => l.x)';
 }, 'number');
 
 register('elementpositiontop', (value, formatter) => {
-    return '.getLocation().then(function (l){return l.y;})';
+    return '.getLocation().then(l => l.y)';
 }, 'number');
 
 register('elementheight', (value, formatter) => {
-    return '.getSize().then(function (s){return s.height;})';
+    return '.getSize().then(s => s.height)';
 }, 'number');
 
 register('elementpresent', (value, formatter) => {
@@ -123,5 +119,5 @@ register('title', (value, formatter) => {
 }, 'string', false, false, true);
 
 register('eval', (value, formatter) => {
-    return ".executeAsyncScript('arguments[arguments.length - 1](' + " + formatter.quote(value, true)  + " + ')')";
+    return '.executeAsyncScript(\'arguments[arguments.length - 1](\' + ' + formatter.quote(value, true) + ' + \')\')';
 }, 'string', false, false, true);

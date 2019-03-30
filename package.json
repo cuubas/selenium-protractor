@@ -1,6 +1,6 @@
 {
   "name": "selenium-protractor",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Selenium test case converter to protractor source code",
   "repository": {
     "type": "git",
@@ -14,7 +14,8 @@
   "scripts": {
     "lint": "tslint index.ts lib/*.ts",
     "build:dev": "tsc --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "node index.js in/**/*html out in/_selenium.suite"
   },
   "dependencies": {
     "cheerio": "^0.22.0",
@@ -23,6 +24,8 @@
   },
   "devDependencies": {
     "@types/node": "11.12.2",
+    "@types/mkpath": "0.1.29",
+    "@types/cheerio": "0.22.11",
     "typescript": "3.4.1",
     "tslint": "5.14.0"
   }

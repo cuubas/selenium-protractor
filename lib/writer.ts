@@ -1,42 +1,35 @@
-var fs = require('fs');
-var p = require('path');
-var mkpath = require('mkpath');
+import { promises as fs } from 'fs';
+import * as mkpath from 'mkpath';
+import * as p from 'path';
+import { TestCaseFormatter } from './test-case-formatter';
+import { TestSuiteFormatter } from './test-suite-formatter';
 
-var async = require('async');
+export class Writer {
 
-function Writer(testCaseFormatter, testSuiteFormatter) {
-  this.testCaseFormatter = testCaseFormatter;
-  this.testSuiteFormatter = testSuiteFormatter;
+  constructor(
+    private testCaseFormatter: TestCaseFormatter,
+    private testSuiteFormatter: TestSuiteFormatter,
+  ) { }
+
+  public async transformAndSaveCases(cases: any[], destination: string) {
+    for (const testCase of cases) {
+      await this.saveCase(testCase, this.caseDestinationPath(testCase.file, destination));
+    }
+  }
+
+  public caseDestinationPath(casePath, destination) {
+    return p.join(destination, casePath.replace('.html', '.js'));
+  }
+
+  public async saveCase(testCase, path) {
+    mkpath.sync(p.dirname(path));
+    const output = this.testCaseFormatter.stringify(testCase);
+    await fs.writeFile(path, output);
+  }
+
+  public async saveSuite(suite, path) {
+    mkpath.sync(p.dirname(path));
+    const output = this.testSuiteFormatter.stringify(suite);
+    await fs.writeFile(path, output);
+  }
 }
-
-Writer.prototype.transformAndSaveCases = function (cases, destination, callback) {
-  async.each(cases, (testCase, cb) => {
-    this.saveCase(testCase, this.caseDestinationPath(testCase.file, destination), cb);
-  }, callback);
-};
-
-Writer.prototype.caseDestinationPath = function (casePath, destination) {
-  return p.join(destination, casePath.replace('.html', '.js'));
-};
-
-
-Writer.prototype.saveCase = function (testCase, path, callback) {
-  mkpath(p.dirname(path), (err) => {
-    if (err) {
-      callback(err);
-    } else {
-      fs.writeFile(path, this.testCaseFormatter.stringify(testCase), callback);
-    }
-  });
-};
-
-Writer.prototype.saveSuite = function (suite, path, callback) {
-  mkpath(p.dirname(path), (err) => {
-    if (err) {
-      callback(err);
-    } else {
-      fs.writeFile(path, this.testSuiteFormatter.stringify(suite), callback);
-    }
-  });
-};
-module.exports = Writer;
