@@ -15,6 +15,7 @@ Comment will be treated as `desc` command (only if next command in the list is a
 
 if comment or `it` value start with `ide:`, all commands in that block will be ignored when parsing the html file. See login.html why this is useful.
 if comment or `it` value starts with `skip:`, test case will be marked as skipped
+if comment or `it` values starts with `@if(<some-condition>):`, generated `it` or `describe` block will only run if that condition is met. Only useful in combination with `export` command
 
 ## Flow
 In some cases you need to skip or run certain commands depending on what the user sees

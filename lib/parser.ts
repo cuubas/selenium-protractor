@@ -5,6 +5,7 @@ import { TestCase, TestCaseCommand, TestSuite } from './model';
 
 const IDE_PREFIX = 'ide:';
 const SKIP_PREFIX = 'skip:';
+const IF_PREFIX_REGEX = /^@if\(([^:]*)\)\:/;
 
 export class Parser {
 
@@ -27,6 +28,13 @@ export class Parser {
 
         const handleCommand = (command: TestCaseCommand) => {
             if (command.type === 'it') {
+                const condition = command.value.match(IF_PREFIX_REGEX);
+                if (condition) {
+                    // TODO: support all html entities?
+                    command.condition = condition[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+                    command.value = command.value.substring(condition[0].length).trim();
+                }
+
                 skipCommands = command.value.indexOf(SKIP_PREFIX) === 0;
                 ignoreCommands = command.value.indexOf(IDE_PREFIX) === 0;
                 if (skipCommands) {

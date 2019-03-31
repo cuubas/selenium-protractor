@@ -170,11 +170,11 @@ register('assertnot', (cmd, formatter) => {
 });
 
 register('it', (cmd, formatter) => {
-    return (cmd.skip ? 'xit' : 'it') + '(' + formatter.quote(cmd.value) + ', () => {' + formatter.endOfLine.repeat(2);
+    return (cmd.condition ? (`if (${cmd.condition}) `) : '') + (cmd.skip ? 'xit' : 'it') + '(' + formatter.quote(cmd.value) + ', () => {' + formatter.endOfLine.repeat(2);
 }, true, true);
 
 register('desc', (cmd, formatter) => {
-    return (cmd.skip ? 'xdescribe' : 'describe') + '(' + formatter.quote(cmd.value) + ', () => {' + formatter.endOfLine.repeat(2);
+    return (cmd.condition ? (`if (${cmd.condition}) `) : '') + (cmd.skip ? 'xdescribe' : 'describe') + '(' + formatter.quote(cmd.value) + ', () => {' + formatter.endOfLine.repeat(2);
 }, true);
 
 register('export', (cmd, formatter) => {

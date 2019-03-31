@@ -3,6 +3,7 @@ export interface TestCaseCommand {
   locator?: string;
   value: string;
   skip?: boolean;
+  condition?: string;
 }
 
 export interface TestCase {
