@@ -12,14 +12,14 @@
     "protractor"
   ],
   "scripts": {
-    "lint": "tslint index.ts lib/*.ts",
+    "lint": "tslint -p ./tsconfig.json",
     "build:dev": "tsc --watch",
     "build": "tsc",
     "test": "node index.js in/**/*html out in/_selenium.suite"
   },
   "dependencies": {
     "cheerio": "^0.22.0",
-    "globby": "6.1.0",
+    "globby": "^9.1.0",
     "mkpath": "^1.0.0"
   },
   "devDependencies": {
