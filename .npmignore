@@ -1,6 +1,7 @@
 node_modules
 .vscode
 **/*.ts
+!**/*.d.ts
 in
 out
 tsconfig.json
