@@ -28,5 +28,8 @@
     "@types/cheerio": "0.22.11",
     "typescript": "3.4.1",
     "tslint": "5.14.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }
