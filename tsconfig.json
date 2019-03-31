@@ -1,0 +1,9 @@
+{
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "es2015",
+        "declaration": true
+    }
+}

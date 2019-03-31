@@ -7,3 +7,6 @@ npm-debug.log
 
 out
 in/_selenium.suite
+index.js
+lib/*.js
+**/*.d.ts

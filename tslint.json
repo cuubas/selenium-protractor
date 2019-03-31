@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "tslint:latest"
+  ],
+  "rules": {
+    "max-line-length": false,
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "no-string-literal": false,
+    "object-literal-sort-keys": false,
+    "interface-name": false
+  }
+}
