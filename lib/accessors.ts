@@ -1,16 +1,31 @@
 import { get as locator } from './locators';
+import { TestCaseCommand } from './model';
+import { TestCaseFormatter } from './test-case-formatter';
 
-export const accessors = {} as any;
+export type ValueType = 'string' | 'number' | 'boolean';
 
-export function register(type, fn, valueType?, isMulti?, inBrowserContext?, global?) {
-    accessors[type] = fn;
-    fn.valueType = valueType || 'string';
-    fn.isMulti = isMulti;
-    fn.inBrowserContext = inBrowserContext;
-    fn.isGlobal = global;
+export type AccessorFnBase = ((value: string, formatter: TestCaseFormatter) => string);
+
+export type AccessorFn = AccessorFnBase & {
+    type: string;
+    valueType: ValueType;
+    isMulti: boolean;
+    inBrowserContext: boolean;
+    isGlobal: boolean;
+};
+
+export const accessors: { [type: string]: AccessorFn } = {};
+
+export function register(type: string, fn: AccessorFnBase, valueType?: ValueType, isMulti?: boolean, inBrowserContext?: boolean, global?: boolean) {
+    accessors[type] = fn as AccessorFn;
+    accessors[type].valueType = valueType || 'string';
+    accessors[type].isMulti = isMulti;
+    accessors[type].inBrowserContext = inBrowserContext;
+    accessors[type].isGlobal = global;
 }
-
-export function get(type, formatter?) {
+export function get(type: string): AccessorFn;
+export function get(type: string, formatter: TestCaseFormatter): string;
+export function get(type: string, formatter?: TestCaseFormatter) {
     const fn = accessors[type && type.toLowerCase()] || accessors['default'];
     if (arguments.length === 2) {
         return fn(type, formatter);
@@ -19,7 +34,7 @@ export function get(type, formatter?) {
     }
 }
 
-export function format(type, cmd, formatter, output) {
+export function format(type: string, cmd: TestCaseCommand, formatter: TestCaseFormatter, output: string[]) {
     const getter = get(type);
     // special case for attribute accessor
     if (type === 'attribute') {

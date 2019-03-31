@@ -1,36 +1,31 @@
 import * as cheerio from 'cheerio';
 import { promises as fs } from 'fs';
 import * as p from 'path';
+import { TestCase, TestCaseCommand, TestSuite } from './model';
 
 const IDE_PREFIX = 'ide:';
 const SKIP_PREFIX = 'skip:';
 
 export class Parser {
 
-    public toShortPath(path, baseDir) {
-        path = path.replace(/\\/g, '/').replace(baseDir, '');
-        if (path.indexOf('/') === 0) {
-            path = path.substring(1);
-        }
-        return path;
-    }
-
-    public async readCase(path: string, baseDir: string) {
+    public async readCase(path: string, baseDir: string): Promise<TestCase> {
 
         const data = await fs.readFile(path);
 
         const $ = cheerio.load(data);
         let ignoreCommands = false;
         let skipCommands = false;
-        const testCase = {} as any;
-        testCase.baseUrl = $('link[rel="selenium.base"]').attr('href');
-        testCase.path = path;
-        testCase.file = this.toShortPath(path, baseDir);
+        const file = this.toShortPath(path, baseDir);
 
-        testCase.title = testCase.file;
-        testCase.commands = [];
+        const testCase: TestCase = {
+            baseUrl: $('link[rel="selenium.base"]').attr('href'),
+            path,
+            file,
+            title: file,
+            commands: [],
+        };
 
-        const handleCommand = (command) => {
+        const handleCommand = (command: TestCaseCommand) => {
             if (command.type === 'it') {
                 skipCommands = command.value.indexOf(SKIP_PREFIX) === 0;
                 ignoreCommands = command.value.indexOf(IDE_PREFIX) === 0;
@@ -51,75 +46,84 @@ export class Parser {
         };
         // $('table tbody').each() doesnt include comments, only tags
         $('table tbody')[0].children.forEach((e) => {
-            let command;
+            let command: TestCaseCommand;
             if (e.type === 'tag' && e.tagName.toLowerCase() === 'tr') {
                 const cells = $(e).find('td');
-                command = {};
-                command.type = $(cells[0]).text();
-                command.locator = $(cells[1]).text();
-                command.value = $(cells[2]).text();
+                command = {
+                    type: $(cells[0]).text(),
+                    locator: $(cells[1]).text(),
+                    value: $(cells[2]).text(),
+                };
                 handleCommand(command);
             } else if (e.type === 'comment') {
-                command = {};
-                command.type = 'it';
-                command.value = e.data;
+                command = {
+                    type: 'it',
+                    value: e.data,
+                };
                 handleCommand(command);
             }
         });
         return testCase;
     }
 
-    public async readCases(files: string[], baseDir: string, parseCases = true) {
+    public async readCases(files: string[], baseDir: string, parseCases = true): Promise<TestCase[]> {
         // by default read cases
-        const cases = [];
+        const cases: TestCase[] = [];
         baseDir = baseDir.replace(/\\/g, '/');
-        // only parse cases when needed (for internal use)
-        if (parseCases) {
-
-            for (const file of files) {
+        for (const file of files) {
+            // only parse cases when needed (for internal use)
+            if (parseCases) {
                 const testCase = await this.readCase(file, baseDir);
                 if (testCase) {
                     cases.push(testCase);
                 }
-            }
-            return cases;
-        } else {
-            return files.map((path) => {
-                const file = this.toShortPath(path, baseDir);
-                return {
-                    path,
+            } else {
+                cases.push({
+                    baseUrl: '',
+                    path: file,
                     file,
                     title: file,
-                };
-            });
+                    commands: [],
+                });
+            }
         }
+        return cases;
     }
 
-    public async readSuite(path: string, parseCases = true) {
+    public async readSuite(path: string, parseCases = true): Promise<TestSuite> {
         const dir = p.dirname(path);
-        const suite = {} as any;
         const data = await fs.readFile(path);
 
         const $ = cheerio.load(data);
         const list = $('table a');
-        suite.title = $('title').text();
-        suite.file = path;
+
         const references = list.map((index, e) => {
             return p.join(dir, $(e).attr('href'));
         }).get();
 
-        // only read cases when they are needed, otherwise only keep references
-        suite.cases = await this.readCases(references, dir, parseCases);
+        const suite: TestSuite = {
+            title: $('title').text(),
+            file: path,
+            cases: await this.readCases(references, dir, parseCases),
+        };
 
         return suite;
     }
 
-    public newSuite(title, path) {
+    public newSuite(title: any, path: string): TestSuite {
         return {
-            title: 'Test Suite',
+            title: title || 'Test Suite',
             file: path,
             cases: [],
         };
+    }
+
+    private toShortPath(path: string, baseDir: string) {
+        path = path.replace(/\\/g, '/').replace(baseDir, '');
+        if (path.indexOf('/') === 0) {
+            path = path.substring(1);
+        }
+        return path;
     }
 
 }

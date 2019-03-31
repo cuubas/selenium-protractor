@@ -9,6 +9,7 @@
       "single"
     ],
     "no-string-literal": false,
-    "object-literal-sort-keys": false
+    "object-literal-sort-keys": false,
+    "interface-name": false
   }
 }

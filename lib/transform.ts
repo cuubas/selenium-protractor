@@ -1,5 +1,6 @@
-import * as globby from 'globby';
+import globby from 'globby';
 import * as p from 'path';
+import { TestSuite } from './model';
 import { Parser } from './parser';
 import { Writer } from './writer';
 
@@ -10,7 +11,7 @@ export class Transform {
     private writer: Writer,
   ) { }
 
-  public async run(source, destination, suitePath, delta = false) {
+  public async run(source: string, destination: string, suitePath: string, delta = false) {
 
     const baseDir = p.dirname(suitePath);
     // nothing to do if files list is empty
@@ -24,7 +25,7 @@ export class Transform {
 
     await this.writer.transformAndSaveCases(cases, destination);
 
-    let suite;
+    let suite: TestSuite;
     try {
       suite = await this.parser.readSuite(suitePath);
     } catch (err) {

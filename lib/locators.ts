@@ -1,10 +1,14 @@
-export const locators = {};
+import { TestCaseFormatter } from './test-case-formatter';
 
-export function register(type, fn) {
+export type LocatorFn = (locator: string, formatter: TestCaseFormatter) => string;
+
+export const locators: { [type: string]: LocatorFn } = {};
+
+export function register(type: string, fn: LocatorFn) {
     locators[type] = fn;
 }
 
-export function get(input, formatter, isMulti?: boolean) {
+export function get(input: string, formatter: TestCaseFormatter, isMulti?: boolean) {
     let res;
     if (input.indexOf('$') === 0) {
         const end = input.indexOf('}');

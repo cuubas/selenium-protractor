@@ -1,7 +1,8 @@
+import { TestSuite } from './model';
 
 export class TestSuiteFormatter {
 
-  public stringify(suite) {
+  public stringify(suite: TestSuite) {
     const rows = suite.cases.map((testCase) => {
       return `<tr><td><a href="${testCase.file}">${testCase.title}</a></td></tr>`;
     });

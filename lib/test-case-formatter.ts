@@ -1,24 +1,31 @@
 import { handlers } from './handlers';
 import { locators } from './locators';
+import { TestCase, TestCaseCommand } from './model';
+
+export interface TestCaseFormatterOptions {
+    endOfLine?: string;
+    whitespace?: string;
+}
 
 export class TestCaseFormatter {
-    private numberLikeRegex = /^[\d]+$|^[\d]+\.[\d]+$/;
-    private validLocatorRegex = /^[a-zA-Z0-9]+=/;
-    private whitespace: string;
-    private endOfLine: string;
-    private options: any;
+    public readonly endOfLine: string;
+    public readonly whitespace: string;
+    public readonly numberLikeRegex = /^[\d]+$|^[\d]+\.[\d]+$/;
+    public readonly validLocatorRegex = /^[a-zA-Z0-9]+=/;
 
-    constructor(options) {
+    private options: TestCaseFormatterOptions;
+
+    constructor(options?: TestCaseFormatterOptions) {
         this.options = options || {};
         this.endOfLine = this.options.endOfLine || '\n';
         this.whitespace = this.options.whitespace || '  ';
     }
 
-    public indent(num) {
+    public indent(num: number) {
         return this.whitespace.repeat(num);
     }
 
-    public comparisonExpression(left, right) {
+    public comparisonExpression(left: string, right: string) {
         let operator = '=';
         if (right.indexOf('<') === 0 || right.indexOf('>') === 0) {
             operator = right.substring(0, 1);
@@ -27,11 +34,11 @@ export class TestCaseFormatter {
         return this.expression(left) + ' ' + operator + ' ' + this.expression(right);
     }
 
-    public stringifyCommand(cmd) {
+    public stringifyCommand(cmd: TestCaseCommand) {
         return cmd.type + '|' + cmd.locator + '|' + cmd.value;
     }
 
-    public quote(v, withVariables) {
+    public quote(v: string, withVariables: boolean = false) {
         if (withVariables) {
             return v ? '`' + v.replace(/`/g, '\\\`') + '`' : '\'\'';
         } else {
@@ -39,7 +46,7 @@ export class TestCaseFormatter {
         }
     }
 
-    public expression(v, forceString = false) {
+    public expression(v: string, forceString = false) {
         if (v && v.indexOf('${') === 0 && v.indexOf('}') === v.length - 1) {
             return v.trim().substring(2, v.length - 1);
         } else if (!forceString && this.numberLikeRegex.test(v.trim())) { // keep numbers as they are
@@ -51,15 +58,15 @@ export class TestCaseFormatter {
         }
     }
 
-    public stringify(testCase) {
-        const content = [];
+    public stringify(testCase: TestCase) {
+        const content: string[] = [];
         let indentLevel = 0;
         let standardIndentLevel = 0;
         let inDescBlock = false;
-        let variables = [];
+        let variables: string[] = [];
         let noDescOrExportCommand = true;
 
-        const getHandler = (cmd) => {
+        const getHandler = (cmd: TestCaseCommand) => {
             let handler = handlers[cmd.type.toLowerCase()];
             if (!handler) {
                 if (cmd.type.indexOf('assert') === 0) {
@@ -77,11 +84,11 @@ export class TestCaseFormatter {
             return handler;
         };
 
-        const push = (v) => {
+        const push = (v: string) => {
             content.push(this.indent(indentLevel) + v);
         };
 
-        const closeIfNeeded = (toLevel) => {
+        const closeIfNeeded = (toLevel: number) => {
             while (indentLevel > toLevel) {
                 indentLevel--;
                 push('});' + this.endOfLine.repeat(2));

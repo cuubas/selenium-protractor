@@ -1,17 +1,27 @@
 // tslint:disable:max-line-length
-import { format as accessorFormat } from './accessors';
+import { format as accessorFormat, ValueType } from './accessors';
 import { get as locator } from './locators';
+import { TestCaseCommand } from './model';
+import { TestCaseFormatter } from './test-case-formatter';
 
-export const handlers = {} as any;
+export type HandlerFnBase = ((cmd: TestCaseCommand, formatter: TestCaseFormatter) => string | string[]);
 
-export function register(type, fn, scoped?: boolean, closeBlockBefore?: boolean) {
-    handlers[type] = fn;
-    fn.type = type;
-    fn.scoped = scoped;
-    fn.closeBlockBefore = closeBlockBefore;
+export type HandlerFn = HandlerFnBase & {
+    type: string;
+    scoped: boolean;
+    closeBlockBefore: boolean;
+};
+
+export const handlers: { [type: string]: HandlerFn } = {};
+
+export function register(type: string, fn: HandlerFnBase, scoped?: boolean, closeBlockBefore?: boolean) {
+    handlers[type] = fn as HandlerFn;
+    handlers[type].type = type;
+    handlers[type].scoped = scoped;
+    handlers[type].closeBlockBefore = closeBlockBefore;
 }
 
-export function toMatchParam(formatter, expr, modifiers?) {
+export function toMatchParam(formatter: TestCaseFormatter, expr: string, modifiers?: string) {
     if (expr.indexOf('/') === 0) {
         return expr;
     } else {
@@ -19,7 +29,7 @@ export function toMatchParam(formatter, expr, modifiers?) {
     }
 }
 
-export function expectation(value, valueType, formatter, message, negate?: boolean) {
+export function expectation(value: string, valueType: ValueType, formatter: TestCaseFormatter, message: string, negate?: boolean) {
     let res = '';
     if (!value) {
         value = '';
@@ -61,7 +71,7 @@ export function expectation(value, valueType, formatter, message, negate?: boole
     return res;
 }
 
-function replaceKeyConstants(input) {
+function replaceKeyConstants(input: string) {
     // TODO: handle all supported keys
     return input.replace(/KEY_ENTER/g, 'protractor.Key.Enter');
 }
@@ -81,7 +91,7 @@ register('defaultassert', (cmd, formatter) => {
     const negate = cmd.type.indexOf('assertNot') === 0;
     const length = negate ? 'assertnot'.length : 'assert'.length;
     const type = cmd.type.substring(length, length + 1).toLowerCase() + cmd.type.substring(length + 1);
-    const res = [];
+    const res: string[] = [];
     const accessor = accessorFormat(type, cmd, formatter, res);
     res.push(formatter.whitespace + 'expect(_value).' + expectation(cmd.value, accessor.valueType, formatter, formatter.stringifyCommand(cmd), negate) + formatter.endOfLine);
     return res;
@@ -95,7 +105,7 @@ register('defaultverify', (cmd, formatter) => {
 register('defaultstore', (cmd, formatter) => {
     const length = 'store'.length;
     const type = cmd.type.substring(length, length + 1).toLowerCase() + cmd.type.substring(length + 1);
-    const res = [];
+    const res: string[] = [];
     const accessor = accessorFormat(type, cmd, formatter, res);
 
     res.push(formatter.whitespace + cmd.value + ' = _value;' + formatter.endOfLine);
@@ -106,7 +116,7 @@ register('defaultstore', (cmd, formatter) => {
 register('defaultecho', (cmd, formatter) => {
     const length = 'echo'.length;
     const type = cmd.type.substring(length, length + 1).toLowerCase() + cmd.type.substring(length + 1);
-    const res = [];
+    const res: string[] = [];
     const accessor = accessorFormat(type, cmd, formatter, res);
 
     res.push(formatter.whitespace + 'console.info(_value);' + formatter.endOfLine);
@@ -210,11 +220,12 @@ register('callback', (cmd, formatter) => {
 
 register('click', (cmd, formatter) => {
     return [
-        handlers['focus'](cmd, formatter),
+        handlers['focus'](cmd, formatter) as string,
         locator(cmd.locator, formatter) + '.click().then(null, (err) => fail(err + "\\ncommand: " + ' + formatter.quote(formatter.stringifyCommand(cmd), true) + '));' + formatter.endOfLine.repeat(2),
     ];
 });
-function mouseAction(type, button, withOffset, cmd, formatter) {
+
+function mouseAction(type: string, button: string, withOffset: boolean, cmd: TestCaseCommand, formatter: TestCaseFormatter) {
     let offset = '';
     if (cmd.value && withOffset) {
         const coords = cmd.value.split(',');
@@ -319,7 +330,7 @@ register('open', (cmd, formatter) => {
 });
 
 register('sleep', (cmd, formatter) => {
-    return 'browser.sleep(' + (cmd.value * 1 || 1000) + ');' + formatter.endOfLine;
+    return 'browser.sleep(' + ((cmd.value as any) * 1 || 1000) + ');' + formatter.endOfLine;
 });
 
 register('focus', (cmd, formatter) => {
